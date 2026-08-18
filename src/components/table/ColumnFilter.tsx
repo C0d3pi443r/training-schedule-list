@@ -26,6 +26,12 @@ function ColumnFilter<T>({ column, value, onApply }: ColumnFilterProps<T>) {
   const [start, setStart] = React.useState(value && typeof value === "object" ? value.start : "");
   const [end, setEnd] = React.useState(value && typeof value === "object" ? value.end : "");
 
+  React.useEffect(() => {
+    setText(typeof value === "string" ? value : "");
+    setStart(value && typeof value === "object" ? value.start : "");
+    setEnd(value && typeof value === "object" ? value.end : "");
+  }, [value]);
+
   if (!column.filter) return null;
 
   const open = Boolean(anchorEl);

@@ -4,6 +4,7 @@ import { Paper, Table, TableContainer } from "@mui/material";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import TablePagination from "./TablePagination";
+import ActiveFilter from "./ActiveFilter";
 
 import type {
   TableColumn,
@@ -94,6 +95,11 @@ function DynamicTable<T>({
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <ActiveFilter
+        columns={columns}
+        filters={filters}
+        onRemove={(columnId: keyof T) => handleFilterChange(columnId, undefined)}
+      />
       <TableContainer sx={{ maxHeight: 520 }}>
         <Table stickyHeader sx={{ minWidth: 900 }}>
           <TableHeader
