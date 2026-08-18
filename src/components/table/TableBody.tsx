@@ -86,7 +86,12 @@ function TableBody<T>({
   return (
     <MuiTableBody>
       {rows.map((row) => (
-        <TableRow key={String(row[rowKey])} row={row} columns={columns} />
+        <TableRow
+          key={String(row[rowKey])}
+          row={row}
+          columns={columns}
+          renderActions={renderActions}
+        />
       ))}
     </MuiTableBody>
   );

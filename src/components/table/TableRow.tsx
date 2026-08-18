@@ -2,17 +2,20 @@ import {
   TableCell,
   TableRow as MuiTableRow,
 } from "@mui/material";
+import type { ReactNode } from "react";
 
 import type { TableColumn } from "../../types/table";
 
 interface TableRowProps<T> {
   row: T;
   columns: readonly TableColumn<T>[];
+  renderActions?: (row: T) => ReactNode;
 }
 
 function TableRow<T>({
   row,
   columns,
+  renderActions,
 }: TableRowProps<T>) {
   return (
     <MuiTableRow hover>
@@ -30,6 +33,12 @@ function TableRow<T>({
           </TableCell>
         );
       })}
+
+      {renderActions && (
+        <TableCell align="center">
+          {renderActions(row)}
+        </TableCell>
+      )}
     </MuiTableRow>
   );
 }
