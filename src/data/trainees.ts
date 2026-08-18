@@ -22,7 +22,7 @@ const LAST_NAMES = [
 export const INSTRUCTORS = ["Michael Smith", "Robert Johnson", "John Williams"];
 export const VEHICLES = ["Bus 01", "Bus 02", "Bus 03", "Vehicle 04"];
 export const LESSON_STATUSES = ["Scheduled", "Completed", "Cancelled"];
-export const ATTENDANCE_STATUSES = ["Present", "Absent", "Late"];
+export const ATTENDANCE_STATUSES = ["Not Recorded", "Present", "Absent", "Late", "Excused"];
 
 const TIMES = ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM", "03:00 PM"];
 

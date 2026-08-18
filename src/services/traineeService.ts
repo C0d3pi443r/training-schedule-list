@@ -56,3 +56,40 @@ export async function updateAttendanceStatus(traineeId: number, status: string):
     trainee.attendanceStatus = status;
   }
 }
+
+export async function createTrainee(input: Omit<Trainee, "id">): Promise<Trainee> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
+  const nextId = trainees.length > 0 ? Math.max(...trainees.map((t) => t.id)) + 1 : 1;
+  const newTrainee: Trainee = { id: nextId, ...input };
+
+  trainees.unshift(newTrainee);
+
+  return newTrainee;
+}
+
+export async function updateTrainee(
+  traineeId: number,
+  updates: Partial<Trainee>,
+): Promise<Trainee> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
+  const trainee = trainees.find((t) => t.id === traineeId);
+  if (!trainee) {
+    throw new Error("Trainee not found");
+  }
+
+  Object.assign(trainee, updates);
+  return trainee;
+}
+
+export async function deleteTrainee(traineeId: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
+  const index = trainees.findIndex((t) => t.id === traineeId);
+  if (index === -1) {
+    throw new Error("Trainee not found");
+  }
+
+  trainees.splice(index, 1);
+}
