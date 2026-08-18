@@ -9,6 +9,7 @@ import {
   MenuItem,
   Stack,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 
 import type { Trainee } from "../../data/trainees";
@@ -18,29 +19,36 @@ interface AttendanceModalProps {
   trainee: Trainee | null;
   open: boolean;
   onClose: () => void;
-  onSave: (traineeId: number, status: string) => void;
+  onSave: (traineeId: number, status: string) => Promise<void>;
 }
 
 function AttendanceModal({ trainee, open, onClose, onSave }: AttendanceModalProps) {
   const [status, setStatus] = React.useState("");
   const [error, setError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (open && trainee) {
       setStatus(trainee.attendanceStatus);
       setError("");
+      setLoading(false);
     }
   }, [open, trainee]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!status) {
       setError("Please select an attendance status.");
       return;
     }
     if (trainee) {
-      onSave(trainee.id, status);
+      try {
+        setLoading(true);
+        await onSave(trainee.id, status);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to save attendance");
+        setLoading(false);
+      }
     }
-    onClose();
   };
 
   return (
@@ -74,9 +82,12 @@ function AttendanceModal({ trainee, open, onClose, onSave }: AttendanceModalProp
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleSave}>
-          Save
+        <Button onClick={onClose} disabled={loading}>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={handleSave} disabled={loading}>
+          {loading ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
+          {loading ? "Saving..." : "Save"}
         </Button>
       </DialogActions>
     </Dialog>
