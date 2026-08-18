@@ -7,6 +7,7 @@ import {
   MenuItem,
   Button,
   Stack,
+  Typography,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import Autocomplete from '@mui/material/Autocomplete';
@@ -25,11 +26,13 @@ function ColumnFilter<T>({ column, value, onApply }: ColumnFilterProps<T>) {
   const [text, setText] = React.useState(typeof value === "string" ? value : "");
   const [start, setStart] = React.useState(value && typeof value === "object" ? value.start : "");
   const [end, setEnd] = React.useState(value && typeof value === "object" ? value.end : "");
-
+  const [dateError, setDateError] = React.useState("");
+  
   React.useEffect(() => {
     setText(typeof value === "string" ? value : "");
     setStart(value && typeof value === "object" ? value.start : "");
     setEnd(value && typeof value === "object" ? value.end : "");
+    setDateError("");
   }, [value]);
 
   if (!column.filter) return null;
@@ -43,6 +46,11 @@ function ColumnFilter<T>({ column, value, onApply }: ColumnFilterProps<T>) {
 
   const handleApply = () => {
     if (filterType === "date-range") {
+      if (start && end && start > end) {
+        setDateError("'From' date must be before 'To' date.");
+        return;
+      }
+      setDateError("");
       onApply(start || end ? { start, end } : undefined);
     } else {
       onApply(text.trim() === "" ? undefined : text.trim());
@@ -54,6 +62,7 @@ function ColumnFilter<T>({ column, value, onApply }: ColumnFilterProps<T>) {
     setText("");
     setStart("");
     setEnd("");
+    setDateError("");
     onApply(undefined);
     handleClose();
   };
@@ -140,7 +149,11 @@ function ColumnFilter<T>({ column, value, onApply }: ColumnFilterProps<T>) {
                     },
                   }}
                   value={start}
-                  onChange={(e) => setStart(e.target.value)}
+                  error={Boolean(dateError)}
+                  onChange={(e) => {
+                    setStart(e.target.value);
+                    setDateError("");
+                  }}
                 />
                 <TextField
                   size='small'
@@ -152,8 +165,17 @@ function ColumnFilter<T>({ column, value, onApply }: ColumnFilterProps<T>) {
                     },
                   }}
                   value={end}
-                  onChange={(e) => setEnd(e.target.value)}
+                  error={Boolean(dateError)}
+                  onChange={(e) => {
+                    setEnd(e.target.value);
+                    setDateError("");
+                  }}
                 />
+                {dateError && (
+                  <Typography variant="caption" color="error">
+                    {dateError}
+                  </Typography>
+                )}
               </>
             )}
 
